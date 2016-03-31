@@ -10,3 +10,13 @@ SwarmFactory::~SwarmFactory()
 
 }
 
+
+BirdFactory::BirdFactory()
+{
+
+}
+
+BirdFactory::~BirdFactory()
+{
+
+}

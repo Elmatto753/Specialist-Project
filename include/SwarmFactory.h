@@ -18,7 +18,7 @@ public:
     return std::unique_ptr<T>( new T(std::forward<Args>(args)... ) );
   }
 
-private:
+protected:
   SwarmFactory();
 
   ~SwarmFactory();
@@ -30,9 +30,11 @@ class BirdFactory : public SwarmFactory
 public:
 
   virtual std::unique_ptr<Member> Produce() const override
-    {return std::unique_ptr<Member>{make_unique<Bird>()}; }
+  {
+    return std::unique_ptr<Member>{make_unique<Bird>()};
+  }
 
-private:
+protected:
   BirdFactory();
 
   ~BirdFactory();
