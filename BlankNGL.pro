@@ -20,18 +20,21 @@ SOURCES+= $$PWD/src/main.cpp \
           $$PWD/src/NGLScene.cpp \
           $$PWD/src/SwarmFactory.cpp \
           $$PWD/src/Member.cpp \
-          $$PWD/src/Bird.cpp
+          $$PWD/src/Bird.cpp \
+          $$PWD/src/Camera.cpp
 # same for the .h files
 HEADERS+= $$PWD/include/NGLScene.h \
           $$PWD/include/SwarmFactory.h \
           $$PWD/include/Member.h \
-          $$PWD/include/Bird.h
+          $$PWD/include/Bird.h \
+          $$PWD/include/Camera.h
 # and add the include dir into the search path for Qt and make
 INCLUDEPATH +=./include
 # where our exe is going to live (root of project)
 DESTDIR=./
 # add the glsl shader files
-OTHER_FILES+= README.md
+OTHER_FILES+= README.md \
+              references.txt
 # were are going to default to a console app
 CONFIG += console
 # note each command you add needs a ; as it will be run as a single line

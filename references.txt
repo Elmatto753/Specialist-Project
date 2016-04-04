@@ -1,2 +1,3 @@
 http://herbsutter.com/gotw/_102/
 
+http://nehe.gamedev.net/article/camera_class_tutorial/18010/

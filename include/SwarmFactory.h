@@ -12,6 +12,7 @@ public:
 
   virtual std::unique_ptr<Member> Produce() const = 0;
 
+  // Implementing make_unique, as it doesn't exist until C++14
   template<typename T, typename ...Args>
   std::unique_ptr<T> make_unique(Args&& ...args) const
   {
@@ -34,10 +35,11 @@ public:
     return std::unique_ptr<Member>{make_unique<Bird>()};
   }
 
-protected:
   BirdFactory();
 
   ~BirdFactory();
+
+protected:
 
 };
 

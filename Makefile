@@ -52,20 +52,24 @@ SOURCES       = src/main.cpp \
 		src/NGLScene.cpp \
 		src/SwarmFactory.cpp \
 		src/Member.cpp \
-		src/Bird.cpp 
+		src/Bird.cpp \
+		src/Camera.cpp 
 OBJECTS       = obj/main.o \
 		obj/NGLScene.o \
 		obj/SwarmFactory.o \
 		obj/Member.o \
-		obj/Bird.o
+		obj/Bird.o \
+		obj/Camera.o
 DIST          = BlankNGL.pro include/NGLScene.h \
 		include/SwarmFactory.h \
 		include/Member.h \
-		include/Bird.h src/main.cpp \
+		include/Bird.h \
+		include/Camera.h src/main.cpp \
 		src/NGLScene.cpp \
 		src/SwarmFactory.cpp \
 		src/Member.cpp \
-		src/Bird.cpp
+		src/Bird.cpp \
+		src/Camera.cpp
 QMAKE_TARGET  = BlankNGL
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = BlankNGL
@@ -397,8 +401,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents include/NGLScene.h include/SwarmFactory.h include/Member.h include/Bird.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/main.cpp src/NGLScene.cpp src/SwarmFactory.cpp src/Member.cpp src/Bird.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents include/NGLScene.h include/SwarmFactory.h include/Member.h include/Bird.h include/Camera.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp src/NGLScene.cpp src/SwarmFactory.cpp src/Member.cpp src/Bird.cpp src/Camera.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -594,7 +598,15 @@ obj/main.o: src/main.cpp /home/elmatto/Qt/5.5/gcc_64/include/QtGui/QGuiApplicati
 		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qopenglcontext.h \
 		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/QScopedPointer \
 		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qopenglversionfunctions.h \
-		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/QImage
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/QImage \
+		include/SwarmFactory.h \
+		include/Bird.h \
+		include/Member.h \
+		include/Camera.h \
+		/home/elmatto/NGL/include/ngl/Obj.h \
+		/home/elmatto/NGL/include/ngl/Texture.h \
+		/home/elmatto/NGL/include/ngl/Image.h \
+		/home/elmatto/NGL/include/ngl/AbstractMesh.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/main.o src/main.cpp
 
 obj/NGLScene.o: src/NGLScene.cpp /home/elmatto/Qt/5.5/gcc_64/include/QtGui/QMouseEvent \
@@ -756,19 +768,162 @@ obj/NGLScene.o: src/NGLScene.cpp /home/elmatto/Qt/5.5/gcc_64/include/QtGui/QMous
 		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/QScopedPointer \
 		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qopenglversionfunctions.h \
 		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/QImage \
+		include/SwarmFactory.h \
+		include/Bird.h \
+		include/Member.h \
+		include/Camera.h \
+		/home/elmatto/NGL/include/ngl/Obj.h \
+		/home/elmatto/NGL/include/ngl/Texture.h \
+		/home/elmatto/NGL/include/ngl/Image.h \
+		/home/elmatto/NGL/include/ngl/AbstractMesh.h \
 		/home/elmatto/NGL/include/ngl/NGLInit.h \
 		/home/elmatto/NGL/include/ngl/Singleton.h \
 		/home/elmatto/NGL/include/ngl/VAOPrimitives.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/NGLScene.o src/NGLScene.cpp
 
-obj/SwarmFactory.o: src/SwarmFactory.cpp include/SwarmFactory.h
+obj/SwarmFactory.o: src/SwarmFactory.cpp include/SwarmFactory.h \
+		include/Bird.h \
+		include/Member.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/SwarmFactory.o src/SwarmFactory.cpp
 
-obj/Member.o: src/Member.cpp 
+obj/Member.o: src/Member.cpp include/Member.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Member.o src/Member.cpp
 
-obj/Bird.o: src/Bird.cpp 
+obj/Bird.o: src/Bird.cpp include/Bird.h \
+		include/Member.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Bird.o src/Bird.cpp
+
+obj/Camera.o: src/Camera.cpp include/Camera.h \
+		/home/elmatto/NGL/include/ngl/Obj.h \
+		/home/elmatto/NGL/include/ngl/Types.h \
+		/home/elmatto/NGL/include/ngl/glew.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtOpenGL/QGLContext \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtOpenGL/qgl.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qopengl.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qglobal.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qconfig.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qfeatures.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qsystemdetection.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qprocessordetection.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qcompilerdetection.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qtypeinfo.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qtypetraits.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qsysinfo.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qlogging.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qflags.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qatomic.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qbasicatomic.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qgenericatomic.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qatomic_gcc.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qatomic_msvc.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qatomic_armv7.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qatomic_armv6.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qatomic_armv5.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qatomic_ia64.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qatomic_mips.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qatomic_x86.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qatomic_unix.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qglobalstatic.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qmutex.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qnumeric.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qt_windows.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qopengles2ext.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qopenglext.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtWidgets/qwidget.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qwindowdefs.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qnamespace.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qobject.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qstring.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qchar.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qbytearray.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qrefcount.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qarraydata.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qstringbuilder.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qlist.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qalgorithms.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qiterator.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qbytearraylist.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qstringlist.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qregexp.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qstringmatcher.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qcoreevent.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qscopedpointer.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qmetatype.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qvarlengtharray.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qcontainerfwd.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qisenum.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qobject_impl.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qmargins.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qpaintdevice.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qrect.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qsize.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qpoint.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qpalette.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qcolor.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qrgb.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qbrush.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qpair.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qvector.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qmatrix.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qpolygon.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qregion.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qdatastream.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qiodevice.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qline.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qtransform.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qpainterpath.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qimage.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qpixelformat.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qpixmap.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qshareddata.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qhash.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qfont.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qfontmetrics.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qfontinfo.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qcursor.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qkeysequence.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qevent.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qvariant.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qmap.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qdebug.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qtextstream.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qlocale.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qset.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qurl.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qurlquery.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qfile.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtCore/qfiledevice.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qvector2d.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qtouchdevice.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qpaintengine.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qpainter.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qtextoption.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qpen.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtOpenGL/qglcolormap.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtOpenGL/qtopenglglobal.h \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/QSurfaceFormat \
+		/home/elmatto/Qt/5.5/gcc_64/include/QtGui/qsurfaceformat.h \
+		/home/elmatto/NGL/include/ngl/Texture.h \
+		/home/elmatto/NGL/include/ngl/Image.h \
+		/home/elmatto/NGL/include/ngl/Colour.h \
+		/home/elmatto/NGL/include/ngl/Vec4.h \
+		/home/elmatto/NGL/include/ngl/Vec2.h \
+		/home/elmatto/NGL/include/ngl/Vec3.h \
+		/home/elmatto/NGL/include/ngl/AbstractMesh.h \
+		/home/elmatto/NGL/include/ngl/BBox.h \
+		/home/elmatto/NGL/include/ngl/VertexArrayObject.h \
+		/home/elmatto/NGL/include/ngl/RibExport.h \
+		/home/elmatto/NGL/include/ngl/NGLassert.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Camera.o src/Camera.cpp
 
 ####### Install
 

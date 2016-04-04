@@ -9,6 +9,8 @@ NGLScene::NGLScene()
 {
   // re-size the widget to that of the parent (in this case the GLFrame passed in on construction)
   setTitle("Swarm");
+
+  makerBirds.Produce();
 }
 
 

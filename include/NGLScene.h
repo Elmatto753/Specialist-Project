@@ -6,7 +6,9 @@
 #include <ngl/Transformation.h>
 #include <ngl/Text.h>
 #include <QOpenGLWindow>
+#include "Camera.h"
 #include "SwarmFactory.h"
+
 //----------------------------------------------------------------------------------------------------------------------
 /// @file NGLScene.h
 /// @brief this class inherits from the Qt OpenGLWindow and allows us to use NGL to draw OpenGL
@@ -88,6 +90,11 @@ private:
     /// @brief window height
     //----------------------------------------------------------------------------------------------------------------------
     int m_height;
+
+    BirdFactory makerBirds;
+
+
+
 
 
 };
