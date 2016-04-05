@@ -59,7 +59,15 @@ void NGLScene::paintGL()
 //----------------------------------------------------------------------------------------------------------------------
 void NGLScene::mouseMoveEvent (QMouseEvent * _event)
 {
-
+  // Get the amount the mouse has moved
+  ngl::Vec2 o_mouseMovement = ngl::Vec2(width()/2 - _event->x(), height()/2 - _event->y());
+  // Increment the player's rotation by this amount
+  cam.rotateCamera(o_mouseMovement.m_x, o_mouseMovement.m_y);
+  // Return the mouse pointer to the screen centre and update
+  QPoint glob = mapToGlobal(QPoint(width()/2,height()/2));
+  QCursor::setPos(glob);
+  followSphere.updatePosition(cam.getForwardVector() * 4);
+  update();
 }
 
 
@@ -90,6 +98,7 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   {
   // escape key to quite
   case Qt::Key_Escape : QGuiApplication::exit(EXIT_SUCCESS); break;
+  case Qt::Key_Space : makerBirds.Produce(); break;
   default : break;
   }
   // finally update the GLWindow and re-draw

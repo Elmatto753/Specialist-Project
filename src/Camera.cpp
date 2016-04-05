@@ -2,7 +2,7 @@
 
 Camera::Camera()
 {
-  std::cout<<"test";
+
 }
 
 Camera::~Camera()
@@ -11,15 +11,18 @@ Camera::~Camera()
 }
 
 
-void Camera::moveCamera(float _Forward, float _Right)
+void Camera::moveCamera(float _forward, float _right)
 {
-  m_Position += _Forward * m_forwardVector;
-  m_Position += _Right * m_sideVector;
+  m_position += _forward * m_forwardVector;
+  m_position += _right * m_sideVector;
 }
 
-void Camera::rotateCamera(float _Up, float _Right)
+void Camera::rotateCamera(float _up, float _right)
 {
-
+  // Increment the player's rotation by this amount
+  m_xRot = (m_xRot + _right / 500);
+  m_yRot = (m_yRot + _up / 500);
+  std::cout<<"Camera rotated ";
 }
 
 void Camera::calcVectors()

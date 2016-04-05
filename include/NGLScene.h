@@ -1,13 +1,15 @@
 #ifndef NGLSCENE_H__
 #define NGLSCENE_H__
+
+#include "Camera.h"
+#include "SwarmFactory.h"
+#include "FollowPoint.h"
 #include <ngl/Camera.h>
 #include <ngl/Colour.h>
 #include <ngl/Light.h>
 #include <ngl/Transformation.h>
 #include <ngl/Text.h>
 #include <QOpenGLWindow>
-#include "Camera.h"
-#include "SwarmFactory.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 /// @file NGLScene.h
@@ -92,6 +94,9 @@ private:
     int m_height;
 
     BirdFactory makerBirds;
+    Camera cam;
+    FollowPoint followSphere;
+
 
 
 
