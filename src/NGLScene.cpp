@@ -9,8 +9,6 @@ NGLScene::NGLScene()
 {
   // re-size the widget to that of the parent (in this case the GLFrame passed in on construction)
   setTitle("Swarm");
-
-  makerBirds.Produce();
 }
 
 
@@ -44,9 +42,59 @@ void NGLScene::initializeGL()
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
 
+  // Initialise and set up the shaders with NGL
+  ngl::ShaderLib *shader =ngl::ShaderLib::instance();
+
+  shader->createShaderProgram("Colour");
+  shader->attachShader("ColourVertex",ngl::ShaderType::VERTEX);
+  shader->attachShader("ColourFragment",ngl::ShaderType::FRAGMENT);
+
+  shader->loadShaderSource("ColourVertex","shaders/VertShader.glsl");
+  shader->loadShaderSource("ColourFragment","shaders/FragShader.glsl");
+
+  shader->compileShader("ColourVertex");
+  shader->compileShader("ColourFragment");
+
+  shader->attachShaderToProgram("Colour","ColourVertex");
+  shader->attachShaderToProgram("Colour","ColourFragment");
+  shader->linkProgramObject("Colour");
+  (*shader)["Colour"]->use();
+  shader->autoRegisterUniforms("Colour");
+  shader->printProperties();
+  shader->printRegisteredUniforms("Colour");
+
+  shader->setRegisteredUniform("Colour",1.0f,1.0f,1.0f,0.0f);
+  shader->setRegisteredUniform("lightPos",m_lightPos);
+  shader->setRegisteredUniform("lightDiffuse",1.0f,1.0f,1.0f,1.0f);
+
+  // Create the projection matrix
+  m_proj=ngl::perspective(90.0f,float(width()/height()),0.1,20);
+
+  startTimer(10);
+
 }
 
+void NGLScene::loadToShader()
+{
+  ngl::ShaderLib *shader=ngl::ShaderLib::instance();
 
+  ngl::Mat4 MV;
+  ngl::Mat4 MVP;
+  ngl::Mat3 normalMatrix;
+  ngl::Mat4 M;
+  M=m_transform.getMatrix()/**m_mouseGlobalTX*/;
+  MV=  M*ngl::Mat4(cam.getSideVector().m_x, cam.getSideVector().m_y, cam.getSideVector().m_z, 0.0f,
+                   0.0f,1.0f,0.0f,0.0f,
+                   cam.getForwardVector().m_x, cam.getForwardVector().m_y, cam.getForwardVector().m_z, 0.0f,
+                   1.0f,1.0f,1.0f,1.0f);
+  MVP=  MV*m_proj;
+  normalMatrix=MV;
+  normalMatrix.inverse();
+  shader->setShaderParamFromMat4("MV",MV);
+  shader->setShaderParamFromMat4("MVP",MVP);
+  shader->setShaderParamFromMat3("normalMatrix",normalMatrix);
+  shader->setShaderParamFromMat4("M",M);
+}
 
 void NGLScene::paintGL()
 {
@@ -66,8 +114,10 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
   // Return the mouse pointer to the screen centre and update
   QPoint glob = mapToGlobal(QPoint(width()/2,height()/2));
   QCursor::setPos(glob);
-  followSphere.updatePosition(cam.getForwardVector() * 4);
   update();
+  cam.calcVectors();
+  std::cerr<<"x is "<<cam.getForwardVector().m_x<<"\n";
+  followSphere->updatePosition(cam.getForwardVector());
 }
 
 

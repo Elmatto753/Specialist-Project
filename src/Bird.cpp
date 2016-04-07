@@ -2,6 +2,8 @@
 
 Bird::Bird()
 {
+  m_Mesh.load("models/Bird.obj", true);
+  m_Mesh.createVAO();
   std::cout<<"made une birde\n";
 }
 

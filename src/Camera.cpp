@@ -13,8 +13,8 @@ Camera::~Camera()
 
 void Camera::moveCamera(float _forward, float _right)
 {
-  m_position += _forward * m_forwardVector;
-  m_position += _right * m_sideVector;
+  m_Position += _forward * m_forwardVector;
+  m_Position += _right * m_sideVector;
 }
 
 void Camera::rotateCamera(float _up, float _right)

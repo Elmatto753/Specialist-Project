@@ -2,6 +2,7 @@
 #define MEMBER_H__
 
 #include <iostream>
+#include <ngl/Obj.h>
 
 class Member
 {
@@ -12,6 +13,8 @@ public:
   ~Member();
 
 protected:
+
+  ngl::Obj m_Mesh;
 
 
 };

@@ -1,9 +1,10 @@
 #ifndef FOLLOWPOINT_H__
 #define FOLLOWPOINT_H__
 
+#include "Member.h"
 #include <ngl/VAOPrimitives.h>
 
-class FollowPoint
+class FollowPoint : public Member
 {
 public:
 
@@ -15,7 +16,7 @@ public:
 
 protected:
 
-  ngl::Vec3 m_position;
+  ngl::Vec3 m_Position;
 
 };
 
