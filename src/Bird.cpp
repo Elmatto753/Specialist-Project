@@ -11,3 +11,13 @@ Bird::~Bird()
 {
 
 }
+
+void Bird::draw()
+{
+
+}
+
+void Bird::update()
+{
+
+}

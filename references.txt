@@ -1,3 +1,5 @@
 http://herbsutter.com/gotw/_102/
 
 http://nehe.gamedev.net/article/camera_class_tutorial/18010/
+
+http://www.3dgep.com/understanding-the-view-matrix/

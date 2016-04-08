@@ -10,6 +10,10 @@ public:
 
   ~Bird();
 
+  void draw();
+
+  void update();
+
 private:
 
 

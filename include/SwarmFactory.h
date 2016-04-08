@@ -41,6 +41,8 @@ public:
 
 protected:
 
+  std::vector<std::unique_ptr<Member>> BirdID;
+
 };
 
 

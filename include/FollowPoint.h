@@ -14,6 +14,8 @@ public:
 
   void updatePosition(ngl::Vec3 _newPos);
 
+  void draw();
+
 protected:
 
   ngl::Vec3 m_Position;

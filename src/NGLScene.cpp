@@ -77,6 +77,7 @@ void NGLScene::initializeGL()
 void NGLScene::loadToShader()
 {
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
+  shader->use("Colour");
 
   ngl::Mat4 MV;
   ngl::Mat4 MVP;
@@ -101,6 +102,9 @@ void NGLScene::paintGL()
   // clear the screen and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,m_width,m_height);
+  m_transform.setPosition(1.0f,0.0f,0.0f);
+  loadToShader();
+  followSphere->draw();
 
 }
 
@@ -116,8 +120,9 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
   QCursor::setPos(glob);
   update();
   cam.calcVectors();
-  std::cerr<<"x is "<<cam.getForwardVector().m_x<<"\n";
-  followSphere->updatePosition(cam.getForwardVector());
+  std::cout<<"x is "<<cam.getForwardVector().m_x<<"\n";
+  std::cout<<"y is "<<cam.getForwardVector().m_y<<"\n";
+  followSphere->updatePosition(cam.getForwardVector() * 4);
 }
 
 
