@@ -15,6 +15,9 @@ public:
   void rotateCamera(float _up, float _right);
   void calcVectors();
 
+  ngl::Vec3 getPosition() { return m_Position; }
+  ngl::Vec2 getRotation() { return ngl::Vec2(m_xRot,m_yRot); }
+
   ngl::Vec3 getForwardVector() { return m_forwardVector; }
   ngl::Vec3 getSideVector() { return m_sideVector; }
 

@@ -27,7 +27,7 @@ void Camera::rotateCamera(float _up, float _right)
 
 void Camera::calcVectors()
 {
-  // Calculate the player's forward vector based on their angles of rotation
+  // Calculate the camera's forward vector based on its angles of rotation
   m_forwardVector = ngl::Vec3(-(cos(m_xRot) * sin(m_yRot)),
                               -(cos(m_yRot)),
                               sin(m_xRot) * sin(m_yRot));

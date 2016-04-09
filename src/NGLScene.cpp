@@ -70,6 +70,8 @@ void NGLScene::initializeGL()
   // Create the projection matrix
   m_proj=ngl::perspective(90.0f,float(width()/height()),0.1,20);
 
+  followSphere = new FollowPoint;
+
   startTimer(10);
 
 }
@@ -91,10 +93,12 @@ void NGLScene::loadToShader()
   MVP=  MV*m_proj;
   normalMatrix=MV;
   normalMatrix.inverse();
-  shader->setShaderParamFromMat4("MV",MV);
-  shader->setShaderParamFromMat4("MVP",MVP);
-  shader->setShaderParamFromMat3("normalMatrix",normalMatrix);
-  shader->setShaderParamFromMat4("M",M);
+//  shader->setShaderParamFromMat4("MV",MV);
+//  shader->setShaderParamFromMat4("MVP",MVP);
+//  shader->setShaderParamFromMat3("normalMatrix",normalMatrix);
+//  shader->setShaderParamFromMat4("M",M);
+  shader->setUniform("MVP",MVP);
+  shader->setShaderParam4f("Colour", 1.0f, 0.1f, 0.1f, 1.0f);
 }
 
 void NGLScene::paintGL()
@@ -102,7 +106,7 @@ void NGLScene::paintGL()
   // clear the screen and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,m_width,m_height);
-  m_transform.setPosition(1.0f,0.0f,0.0f);
+  m_transform.setPosition(cam.getPosition());
   loadToShader();
   followSphere->draw();
 
@@ -113,16 +117,28 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
 {
   // Get the amount the mouse has moved
   ngl::Vec2 o_mouseMovement = ngl::Vec2(width()/2 - _event->x(), height()/2 - _event->y());
+  if(cam.getRotation().m_y>M_PI)
+  {
+    o_mouseMovement.m_y = -0.0001;
+  }
+
+  if(cam.getRotation().m_y<0.0001)
+  {
+    o_mouseMovement.m_y = 0.001;
+  }
   // Increment the player's rotation by this amount
   cam.rotateCamera(o_mouseMovement.m_x, o_mouseMovement.m_y);
   // Return the mouse pointer to the screen centre and update
   QPoint glob = mapToGlobal(QPoint(width()/2,height()/2));
   QCursor::setPos(glob);
-  update();
+
   cam.calcVectors();
   std::cout<<"x is "<<cam.getForwardVector().m_x<<"\n";
   std::cout<<"y is "<<cam.getForwardVector().m_y<<"\n";
-  followSphere->updatePosition(cam.getForwardVector() * 4);
+//  followSphere->updatePosition(cam.getForwardVector() * 4);
+//  followSphere.draw();
+
+  update();
 }
 
 
@@ -154,6 +170,7 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   // escape key to quite
   case Qt::Key_Escape : QGuiApplication::exit(EXIT_SUCCESS); break;
   case Qt::Key_Space : makerBirds.Produce(); break;
+  case Qt::Key_W : cam.moveCamera(0.1f, 0.0f); break;
   default : break;
   }
   // finally update the GLWindow and re-draw

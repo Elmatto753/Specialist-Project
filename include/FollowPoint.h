@@ -12,6 +12,8 @@ public:
 
   ~FollowPoint();
 
+  ngl::Vec3 getPosition() { return m_Position; }
+
   void updatePosition(ngl::Vec3 _newPos);
 
   void draw();
