@@ -21,6 +21,8 @@ public:
   ngl::Vec3 getForwardVector() { return m_forwardVector; }
   ngl::Vec3 getSideVector() { return m_sideVector; }
 
+  ngl::Vec3 getLook() { return m_Look; }
+
 protected:
 
   ngl::Vec3 m_Position;
@@ -30,6 +32,7 @@ protected:
 
   ngl::Vec3 m_forwardVector;
   ngl::Vec3 m_sideVector;
+  ngl::Vec3 m_Look;
 
 
 

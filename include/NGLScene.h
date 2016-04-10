@@ -107,6 +107,7 @@ private:
     ngl::Vec3 m_lightPos;
 
     ngl::Mat4 m_proj;
+    ngl::Mat4 m_view;
 
 
 

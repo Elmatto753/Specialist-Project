@@ -69,6 +69,7 @@ void NGLScene::initializeGL()
 
   // Create the projection matrix
   m_proj=ngl::perspective(90.0f,float(width()/height()),0.1,20);
+  m_view=ngl::lookAt(cam.getPosition(), cam.getLook(), ngl::Vec3(0.0f, 1.0f, 0.0f));
 
   followSphere = new FollowPoint;
 
@@ -86,11 +87,13 @@ void NGLScene::loadToShader()
   ngl::Mat3 normalMatrix;
   ngl::Mat4 M;
   M=m_transform.getMatrix()/**m_mouseGlobalTX*/;
-  MV=  M*ngl::Mat4(cam.getSideVector().m_x, cam.getSideVector().m_y, cam.getSideVector().m_z, 0.0f,
-                   0.0f,1.0f,0.0f,0.0f,
-                   cam.getForwardVector().m_x, cam.getForwardVector().m_y, cam.getForwardVector().m_z, 0.0f,
-                   1.0f,1.0f,1.0f,1.0f);
-  MVP=  MV*m_proj;
+//  MV=  M*ngl::Mat4(cam.getSideVector().m_x, cam.getSideVector().m_y, cam.getSideVector().m_z, 0.0f,
+//                   0.0f,1.0f,0.0f,0.0f,
+//                   cam.getForwardVector().m_x, cam.getForwardVector().m_y, cam.getForwardVector().m_z, 0.0f,
+//                   1.0f,1.0f,1.0f,1.0f);
+  m_view = ngl::lookAt(cam.getPosition(), cam.getLook(), ngl::Vec3(0.0f, 1.0f, 0.0f));
+  MV = M*m_view;
+  MVP = MV*m_proj;
   normalMatrix=MV;
   normalMatrix.inverse();
 //  shader->setShaderParamFromMat4("MV",MV);
@@ -106,9 +109,11 @@ void NGLScene::paintGL()
   // clear the screen and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,m_width,m_height);
-  m_transform.setPosition(cam.getPosition());
+  m_transform.setPosition(followSphere->getPosition());
   loadToShader();
   followSphere->draw();
+  std::cout<<"cam "<<cam.getPosition().m_x<<"\n";
+  std::cout<<"sphere "<<followSphere->getPosition().m_x<<"\n";
 
 }
 
@@ -135,8 +140,8 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
   cam.calcVectors();
   std::cout<<"x is "<<cam.getForwardVector().m_x<<"\n";
   std::cout<<"y is "<<cam.getForwardVector().m_y<<"\n";
-//  followSphere->updatePosition(cam.getForwardVector() * 4);
-//  followSphere.draw();
+  followSphere->updatePosition(cam.getForwardVector() * 20);
+//  followSphere->draw();
 
   update();
 }
@@ -170,7 +175,10 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   // escape key to quite
   case Qt::Key_Escape : QGuiApplication::exit(EXIT_SUCCESS); break;
   case Qt::Key_Space : makerBirds.Produce(); break;
-  case Qt::Key_W : cam.moveCamera(0.1f, 0.0f); break;
+  case Qt::Key_W : cam.moveCamera(0.1f, 0.0f);  break;
+  case Qt::Key_S : cam.moveCamera(-0.1f, 0.0f); break;
+  case Qt::Key_A : cam.moveCamera(0.0f, -0.1f); break;
+  case Qt::Key_D : cam.moveCamera(0.0f, 0.1f);  break;
   default : break;
   }
   // finally update the GLWindow and re-draw
