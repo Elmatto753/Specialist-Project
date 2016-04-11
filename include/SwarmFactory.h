@@ -10,7 +10,7 @@ class SwarmFactory
 {
 public:
 
-  virtual std::unique_ptr<Member> Produce() const = 0;
+  virtual void Produce() = 0;
 
   // Implementing make_unique, as it doesn't exist until C++14
   template<typename T, typename ...Args>
@@ -30,18 +30,21 @@ class BirdFactory : public SwarmFactory
 {
 public:
 
-  virtual std::unique_ptr<Member> Produce() const override
+  void Produce() override
   {
-    return std::unique_ptr<Member>{make_unique<Bird>()};
+    BirdID.push_back(std::unique_ptr<Bird>{make_unique<Bird>()});
+    std::cout << BirdID.size() << "\n";
   }
 
   BirdFactory();
 
   ~BirdFactory();
 
+  std::vector<std::unique_ptr<Bird>> BirdID;
+
 protected:
 
-  std::vector<std::unique_ptr<Member>> BirdID;
+
 
 };
 

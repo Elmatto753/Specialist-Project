@@ -122,14 +122,14 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
 {
   // Get the amount the mouse has moved
   ngl::Vec2 o_mouseMovement = ngl::Vec2(width()/2 - _event->x(), height()/2 - _event->y());
-  if(cam.getRotation().m_y>M_PI)
+  if(cam.getForwardVector().m_y>=1.0f)
   {
-    o_mouseMovement.m_y = -0.0001;
+    cam.rotateCamera(-0.01f, 0.0f);
   }
 
-  if(cam.getRotation().m_y<0.0001)
+  if(cam.getForwardVector().m_y<=-1.0f)
   {
-    o_mouseMovement.m_y = 0.001;
+    cam.rotateCamera(0.01f, 0.0f);
   }
   // Increment the player's rotation by this amount
   cam.rotateCamera(o_mouseMovement.m_x, o_mouseMovement.m_y);
@@ -140,7 +140,7 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
   cam.calcVectors();
   std::cout<<"x is "<<cam.getForwardVector().m_x<<"\n";
   std::cout<<"y is "<<cam.getForwardVector().m_y<<"\n";
-  followSphere->updatePosition(cam.getForwardVector() * 20);
+//  followSphere->updatePosition(cam.getForwardVector() * 20);
 //  followSphere->draw();
 
   update();

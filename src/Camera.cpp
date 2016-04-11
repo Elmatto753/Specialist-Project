@@ -14,6 +14,7 @@ Camera::~Camera()
 
 void Camera::moveCamera(float _forward, float _right)
 {
+  calcVectors();
   m_Position += _forward * m_forwardVector;
   m_Position += _right * m_sideVector;
 }
@@ -25,9 +26,9 @@ void Camera::rotateCamera(float _up, float _right)
   m_yRot = (m_yRot + _up / 500);
   std::cout<<"Camera rotated ";
 
-  m_Look = m_Position + ngl::Vec3(-(cos(m_xRot) * sin(m_yRot)),
-                                  -(cos(m_yRot)),
-                                   (sin(m_xRot) * sin(m_yRot)));
+  m_Look = m_Position + ngl::Vec3(-(cos(m_yRot) * sin(m_xRot)),
+                                  -(cos(m_xRot)),
+                                   (sin(m_yRot) * sin(m_xRot)));
 }
 
 void Camera::calcVectors()

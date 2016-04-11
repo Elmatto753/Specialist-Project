@@ -9,7 +9,7 @@ Bird::Bird()
 
 Bird::~Bird()
 {
-
+  std::cout<<"Bird deded \n";
 }
 
 void Bird::draw()
@@ -19,5 +19,5 @@ void Bird::draw()
 
 void Bird::update()
 {
-
+  m_Mesh.draw();
 }
