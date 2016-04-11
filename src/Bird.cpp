@@ -14,10 +14,10 @@ Bird::~Bird()
 
 void Bird::draw()
 {
-
+  m_Mesh.draw();
 }
 
 void Bird::update()
 {
-  m_Mesh.draw();
+
 }

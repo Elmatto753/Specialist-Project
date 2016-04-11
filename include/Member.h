@@ -12,6 +12,8 @@ public:
 
   ~Member();
 
+  virtual void draw();
+
 protected:
 
   ngl::Obj m_Mesh;

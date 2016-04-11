@@ -104,16 +104,26 @@ void NGLScene::loadToShader()
   shader->setShaderParam4f("Colour", 1.0f, 0.1f, 0.1f, 1.0f);
 }
 
+void NGLScene::drawMember(Bird _toDraw)
+{
+  _toDraw.draw();
+}
+
 void NGLScene::paintGL()
 {
   // clear the screen and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,m_width,m_height);
   m_transform.setPosition(followSphere->getPosition());
-  loadToShader();
-  followSphere->draw();
-  std::cout<<"cam "<<cam.getPosition().m_x<<"\n";
-  std::cout<<"sphere "<<followSphere->getPosition().m_x<<"\n";
+//  loadToShader();
+//  followSphere->draw();
+  for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
+  {
+    loadToShader();
+    drawMember(*makerBirds.BirdID[i]);
+  }
+//  std::cout<<"cam "<<cam.getPosition().m_x<<"\n";
+//  std::cout<<"sphere "<<followSphere->getPosition().m_x<<"\n";
 
 }
 
@@ -174,7 +184,7 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   {
   // escape key to quite
   case Qt::Key_Escape : QGuiApplication::exit(EXIT_SUCCESS); break;
-  case Qt::Key_Space : makerBirds.Produce(); break;
+  case Qt::Key_Space : makerBirds.Produce(); std::cout<<"registered \n "; break;
   case Qt::Key_W : cam.moveCamera(0.1f, 0.0f);  break;
   case Qt::Key_S : cam.moveCamera(-0.1f, 0.0f); break;
   case Qt::Key_A : cam.moveCamera(0.0f, -0.1f); break;

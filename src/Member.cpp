@@ -9,3 +9,8 @@ Member::~Member()
 {
   std::cout<<"Member deded \n";
 }
+
+void Member::draw()
+{
+  m_Mesh.draw();
+}
