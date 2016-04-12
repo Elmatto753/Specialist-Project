@@ -20,7 +20,7 @@ public:
 
 protected:
 
-  ngl::Vec3 m_Position;
+  //ngl::Vec3 m_Position;
 
 };
 

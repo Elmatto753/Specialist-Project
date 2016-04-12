@@ -14,3 +14,8 @@ void Member::draw()
 {
   m_Mesh.draw();
 }
+
+void Member::update()
+{
+
+}

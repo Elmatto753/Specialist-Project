@@ -14,9 +14,14 @@ public:
 
   virtual void draw();
 
+  virtual void update();
+
+  ngl::Vec3 getPosition() { return m_Position; }
+
 protected:
 
   ngl::Obj m_Mesh;
+  ngl::Vec3 m_Position;
 
 
 };

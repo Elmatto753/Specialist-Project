@@ -4,6 +4,7 @@ Bird::Bird()
 {
   m_Mesh.load("models/Bird.obj", true);
   m_Mesh.createVAO();
+  m_Position = ngl::Vec3(0.0f, 0.0f, 0.0f);
   std::cout<<"made une birde\n";
 }
 

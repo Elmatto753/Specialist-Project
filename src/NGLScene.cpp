@@ -104,9 +104,19 @@ void NGLScene::loadToShader()
   shader->setShaderParam4f("Colour", 1.0f, 0.1f, 0.1f, 1.0f);
 }
 
-void NGLScene::drawMember(Bird _toDraw)
+void NGLScene::drawMember(Member &_toDraw)
 {
   _toDraw.draw();
+}
+
+void NGLScene::updateMember(Member &_toUpdate)
+{
+  _toUpdate.update();
+}
+
+ngl::Vec3 NGLScene::getMemberPosition(Member &_toGet)
+{
+  return _toGet.getPosition();
 }
 
 void NGLScene::paintGL()
@@ -119,12 +129,21 @@ void NGLScene::paintGL()
 //  followSphere->draw();
   for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
   {
+    m_transform.setPosition(getMemberPosition(*makerBirds.BirdID[i]));
     loadToShader();
     drawMember(*makerBirds.BirdID[i]);
   }
 //  std::cout<<"cam "<<cam.getPosition().m_x<<"\n";
 //  std::cout<<"sphere "<<followSphere->getPosition().m_x<<"\n";
 
+}
+
+void NGLScene::timerEvent(QTimerEvent *)
+{
+  for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
+  {
+    updateMember(*makerBirds.BirdID[i]);
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -192,6 +211,7 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   default : break;
   }
   // finally update the GLWindow and re-draw
+  loadToShader();
 
-    update();
+  update();
 }
