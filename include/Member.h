@@ -18,6 +18,7 @@ public:
 
   ngl::Vec3 getPosition() { return m_Position; }
   ngl::Vec3 getVelocity() { return m_Velocity; }
+  void setPosition(ngl::Vec3 newPosition, bool replace);
   void setVelocity(ngl::Vec3 newVelocity, bool replace);
 
 protected:

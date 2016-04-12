@@ -115,6 +115,8 @@ void NGLScene::updateMember(Member &io_toUpdate)
   ngl::Vec3 cohesion = calcCohesion(io_toUpdate);
   ngl::Vec3 separation = calcSeparation(io_toUpdate);
   io_toUpdate.setVelocity(ngl::Vec3(alignment + cohesion + separation), false);
+  std::cout<<io_toUpdate.getVelocity().m_x<<"\n";
+  io_toUpdate.setPosition(io_toUpdate.getVelocity(), false);
 }
 
 float NGLScene::calcDistance(ngl::Vec3 _vector1, ngl::Vec3 _vector2)
@@ -225,7 +227,9 @@ void NGLScene::timerEvent(QTimerEvent *)
 {
   for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
   {
+    std::cout<<i<<" "<<getMemberVelocity(*makerBirds.BirdID[i]).m_x<<"\n";
     updateMember(*makerBirds.BirdID[i]);
+
   }
 }
 

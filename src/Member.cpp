@@ -20,6 +20,19 @@ void Member::update()
 
 }
 
+void Member::setPosition(ngl::Vec3 newPosition, bool replace)
+{
+  if(replace == true)
+  {
+    m_Position = newPosition;
+  }
+
+  else
+  {
+    m_Position += newPosition;
+  }
+}
+
 void Member::setVelocity(ngl::Vec3 newVelocity, bool replace)
 {
   if(replace == true)
@@ -29,6 +42,6 @@ void Member::setVelocity(ngl::Vec3 newVelocity, bool replace)
 
   else
   {
-    { m_Velocity += newVelocity; }
+    m_Velocity += newVelocity;
   }
 }
