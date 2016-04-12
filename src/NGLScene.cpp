@@ -109,14 +109,97 @@ void NGLScene::drawMember(Member &_toDraw)
   _toDraw.draw();
 }
 
-void NGLScene::updateMember(Member &_toUpdate)
+void NGLScene::updateMember(Member &io_toUpdate)
 {
-  _toUpdate.update();
+  ngl::Vec3 alignment = calcAlignment(io_toUpdate);
+  ngl::Vec3 cohesion = calcCohesion(io_toUpdate);
+  ngl::Vec3 separation = calcSeparation(io_toUpdate);
+  io_toUpdate.setVelocity(ngl::Vec3(alignment + cohesion + separation), false);
 }
 
-ngl::Vec3 NGLScene::getMemberPosition(Member &_toGet)
+float NGLScene::calcDistance(ngl::Vec3 _vector1, ngl::Vec3 _vector2)
 {
-  return _toGet.getPosition();
+  float dX = _vector2.m_x - _vector1.m_x;
+  float dY = _vector2.m_y - _vector1.m_y;
+  float dZ = _vector2.m_z - _vector1.m_z;
+  return sqrt(dX*dX + dY*dY + dZ*dZ);
+}
+
+ngl::Vec3 NGLScene::calcAlignment(Member &_toCalc)
+{
+  unsigned int neighbours = 0;
+  ngl::Vec3 alignVec = ngl::Vec3(0.0f, 0.0f, 0.0f);
+  ngl::Vec3 memPos = _toCalc.getPosition();
+  for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
+  {
+    float dist = calcDistance(getMemberPosition(*makerBirds.BirdID[i]), memPos);
+    if(dist < 50.0f && dist != 0.0f )
+    {
+      alignVec += getMemberVelocity(*makerBirds.BirdID[i]);
+      neighbours++;
+    }
+  }
+  if(neighbours == 0)
+  {
+    return alignVec;
+  }
+
+  alignVec /= neighbours;
+  alignVec.normalize();
+  return alignVec;
+}
+
+ngl::Vec3 NGLScene::calcCohesion(Member &_toCalc)
+{
+  unsigned int neighbours = 0;
+  ngl::Vec3 coVec = ngl::Vec3(0.0f, 0.0f, 0.0f);
+  ngl::Vec3 memPos = _toCalc.getPosition();
+  for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
+  {
+    float dist = calcDistance(getMemberPosition(*makerBirds.BirdID[i]), memPos);
+    if(dist < 50.0f && dist != 0.0f )
+    {
+      coVec += getMemberPosition(*makerBirds.BirdID[i]);
+      neighbours++;
+    }
+  }
+  if(neighbours == 0)
+  {
+    return coVec;
+  }
+
+  coVec /= neighbours;
+  coVec = coVec - getMemberPosition(_toCalc);
+  coVec.normalize();
+  return coVec;
+}
+
+ngl::Vec3 NGLScene::calcSeparation(Member &_toCalc)
+{
+  unsigned int neighbours = 0;
+  ngl::Vec3 sepVec = ngl::Vec3(0.0f, 0.0f, 0.0f);
+  ngl::Vec3 memPos = _toCalc.getPosition();
+  for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
+  {
+    float dist = calcDistance(getMemberPosition(*makerBirds.BirdID[i]), memPos);
+    if(dist < 50.0f && dist != 0.0f )
+    {
+      sepVec.m_x += memPos.m_x - getMemberPosition(*makerBirds.BirdID[i]).m_x;
+      sepVec.m_y += memPos.m_y - getMemberPosition(*makerBirds.BirdID[i]).m_y;
+      sepVec.m_z += memPos.m_z - getMemberPosition(*makerBirds.BirdID[i]).m_z;
+      neighbours++;
+    }
+  }
+  if(neighbours == 0)
+  {
+    return sepVec;
+  }
+
+  sepVec /= neighbours;
+  //sepVec = sepVec - getMemberPosition(_toCalc);
+  sepVec *= -1;
+  sepVec.normalize();
+  return sepVec;
 }
 
 void NGLScene::paintGL()

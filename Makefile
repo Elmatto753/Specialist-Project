@@ -1195,7 +1195,8 @@ obj/Bird.o: src/Bird.cpp include/Bird.h \
 		/home/elmatto/NGL/include/ngl/BBox.h \
 		/home/elmatto/NGL/include/ngl/VertexArrayObject.h \
 		/home/elmatto/NGL/include/ngl/RibExport.h \
-		/home/elmatto/NGL/include/ngl/NGLassert.h
+		/home/elmatto/NGL/include/ngl/NGLassert.h \
+		include/SwarmFactory.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Bird.o src/Bird.cpp
 
 obj/Camera.o: src/Camera.cpp include/Camera.h \

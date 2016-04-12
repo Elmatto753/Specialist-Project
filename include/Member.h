@@ -17,11 +17,14 @@ public:
   virtual void update();
 
   ngl::Vec3 getPosition() { return m_Position; }
+  ngl::Vec3 getVelocity() { return m_Velocity; }
+  void setVelocity(ngl::Vec3 newVelocity, bool replace);
 
 protected:
 
   ngl::Obj m_Mesh;
   ngl::Vec3 m_Position;
+  ngl::Vec3 m_Velocity;
 
 
 };

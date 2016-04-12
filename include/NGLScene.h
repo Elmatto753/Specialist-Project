@@ -97,11 +97,19 @@ private:
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief Used to update a given member
     //----------------------------------------------------------------------------------------------------------------------
-    void updateMember(Member &_toUpdate);
+    void updateMember(Member &io_toUpdate);
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief Used to get the position of a given member
     //----------------------------------------------------------------------------------------------------------------------
-    ngl::Vec3 getMemberPosition(Member &_toGet);
+    ngl::Vec3 getMemberPosition(Member &_toGet) { return _toGet.getPosition(); }
+
+    ngl::Vec3 getMemberVelocity(Member &_toGet) { return _toGet.getVelocity(); }
+
+    ngl::Vec3 calcAlignment(Member &_toCalc);
+    ngl::Vec3 calcCohesion(Member &_toCalc);
+    ngl::Vec3 calcSeparation(Member &_toCalc);
+
+    float calcDistance(ngl::Vec3 _vector1, ngl::Vec3 _vector2);
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief window width
     //----------------------------------------------------------------------------------------------------------------------

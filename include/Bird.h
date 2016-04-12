@@ -14,8 +14,13 @@ public:
 
   void update();
 
-private:
+  ngl::Vec3 calcAlignment();
+  ngl::Vec3 calcCohesion();
+  ngl::Vec3 calcSeparation();
 
+protected:
+
+  ngl::Vec3 m_Velocity;
 
 
 
