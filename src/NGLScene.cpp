@@ -107,6 +107,7 @@ void NGLScene::loadToShader()
 void NGLScene::drawMember(Member &_toDraw)
 {
   _toDraw.draw();
+  std::cout<<"drawn\n";
 }
 
 void NGLScene::updateMember(Member &io_toUpdate)
@@ -114,8 +115,11 @@ void NGLScene::updateMember(Member &io_toUpdate)
   ngl::Vec3 alignment = calcAlignment(io_toUpdate);
   ngl::Vec3 cohesion = calcCohesion(io_toUpdate);
   ngl::Vec3 separation = calcSeparation(io_toUpdate);
-  io_toUpdate.setVelocity(ngl::Vec3(alignment + cohesion + separation), false);
-  std::cout<<io_toUpdate.getVelocity().m_x<<"\n";
+  std::cout<<"alignment = "<<alignment.m_x<<"\n";
+  std::cout<<"cohesion = "<<cohesion.m_x<<"\n";
+  std::cout<<"separation = "<<separation.m_x<<"\n";
+  io_toUpdate.setVelocity(ngl::Vec3(alignment + cohesion + separation)/200, false);
+  std::cout<<"Velocity "<<io_toUpdate.getVelocity().m_x<<"\n";
   io_toUpdate.setPosition(io_toUpdate.getVelocity(), false);
 }
 
@@ -124,6 +128,7 @@ float NGLScene::calcDistance(ngl::Vec3 _vector1, ngl::Vec3 _vector2)
   float dX = _vector2.m_x - _vector1.m_x;
   float dY = _vector2.m_y - _vector1.m_y;
   float dZ = _vector2.m_z - _vector1.m_z;
+  std::cout<<"returning "<<sqrt(dX*dX + dY*dY + dZ*dZ)<<"\n";
   return sqrt(dX*dX + dY*dY + dZ*dZ);
 }
 
@@ -135,19 +140,28 @@ ngl::Vec3 NGLScene::calcAlignment(Member &_toCalc)
   for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
   {
     float dist = calcDistance(getMemberPosition(*makerBirds.BirdID[i]), memPos);
+    std::cout<<"BirdID pos = "<<getMemberPosition(*makerBirds.BirdID[i]).m_x<<" "<<getMemberPosition(*makerBirds.BirdID[i]).m_y<<" "<<getMemberPosition(*makerBirds.BirdID[i]).m_z<<"\n";
+
+    std::cout<<"dist = "<<dist<<"\n";
     if(dist < 50.0f && dist != 0.0f )
     {
       alignVec += getMemberVelocity(*makerBirds.BirdID[i]);
       neighbours++;
+      std::cout<<"You've got mail \n";
     }
   }
   if(neighbours == 0)
   {
+    std::cout<<"No neighbours\n";
     return alignVec;
   }
 
   alignVec /= neighbours;
-  alignVec.normalize();
+  if(alignVec.length() != 0.0f)
+  {
+    alignVec.normalize();
+  }
+  std::cout<<"Some neighbours\n";
   return alignVec;
 }
 
@@ -197,8 +211,9 @@ ngl::Vec3 NGLScene::calcSeparation(Member &_toCalc)
     return sepVec;
   }
 
+  std::cout<<"neighbours: "<<neighbours<<"\n";
   sepVec /= neighbours;
-  //sepVec = sepVec - getMemberPosition(_toCalc);
+  sepVec = sepVec - getMemberPosition(_toCalc);
   sepVec *= -1;
   sepVec.normalize();
   return sepVec;
@@ -217,6 +232,7 @@ void NGLScene::paintGL()
     m_transform.setPosition(getMemberPosition(*makerBirds.BirdID[i]));
     loadToShader();
     drawMember(*makerBirds.BirdID[i]);
+    updateMember(*makerBirds.BirdID[i]);
   }
 //  std::cout<<"cam "<<cam.getPosition().m_x<<"\n";
 //  std::cout<<"sphere "<<followSphere->getPosition().m_x<<"\n";
@@ -225,12 +241,7 @@ void NGLScene::paintGL()
 
 void NGLScene::timerEvent(QTimerEvent *)
 {
-  for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
-  {
-    std::cout<<i<<" "<<getMemberVelocity(*makerBirds.BirdID[i]).m_x<<"\n";
-    updateMember(*makerBirds.BirdID[i]);
-
-  }
+  update();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

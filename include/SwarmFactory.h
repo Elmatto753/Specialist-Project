@@ -33,7 +33,7 @@ public:
   void Produce() override
   {
     BirdID.push_back(std::unique_ptr<Bird>{make_unique<Bird>()});
-    std::cout << BirdID.size() << "\n";
+    std::cout <<"size " <<BirdID.size() << "\n";
   }
 
   BirdFactory();

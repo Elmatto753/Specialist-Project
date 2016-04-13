@@ -1,6 +1,7 @@
 #ifndef BIRD_H__
 #define BIRD_H__
 #include "Member.h"
+#include <random>
 
 class Bird : public Member
 {
