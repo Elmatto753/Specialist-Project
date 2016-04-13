@@ -113,12 +113,15 @@ void NGLScene::drawMember(Member &_toDraw)
 void NGLScene::updateMember(Member &io_toUpdate)
 {
   ngl::Vec3 alignment = calcAlignment(io_toUpdate);
-  ngl::Vec3 cohesion = calcCohesion(io_toUpdate);
+  ngl::Vec3 cohesion = /*calcCohesion(io_toUpdate)*/ followSphere->getPosition();
+  std::cout<<"position "<<followSphere->getPosition().m_x<<"\n";
   ngl::Vec3 separation = calcSeparation(io_toUpdate);
   std::cout<<"alignment = "<<alignment.m_x<<"\n";
   std::cout<<"cohesion = "<<cohesion.m_x<<"\n";
   std::cout<<"separation = "<<separation.m_x<<"\n";
-  io_toUpdate.setVelocity(ngl::Vec3(alignment + cohesion + separation)/200, false);
+  ngl::Vec3 newVelocity = ngl::Vec3(alignment + cohesion + separation);
+  newVelocity.normalize();
+  io_toUpdate.setVelocity(newVelocity*0.01, false);
   std::cout<<"Velocity "<<io_toUpdate.getVelocity().m_x<<"\n";
   io_toUpdate.setPosition(io_toUpdate.getVelocity(), false);
 }
