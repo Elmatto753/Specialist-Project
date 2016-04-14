@@ -21,6 +21,12 @@ public:
   ngl::Vec3 getForwardVector() { return m_forwardVector; }
   ngl::Vec3 getSideVector() { return m_sideVector; }
 
+  float getxRot() { return m_xRot; }
+  float getyRot() { return m_yRot; }
+
+  void setxRot(float newX);
+  void setyRot(float newY);
+
   ngl::Vec3 getLook() { return m_Look; }
 
 protected:

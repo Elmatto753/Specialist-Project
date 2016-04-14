@@ -30,8 +30,8 @@ void Member::setPosition(ngl::Vec3 newPosition, bool replace)
   else
   {
     m_Position += newPosition;
-    std::cout<<newPosition.m_x<<"\n";
-    std::cout<<m_Position.m_x<<"\n";
+//    std::cout<<newPosition.m_x<<"\n";
+//    std::cout<<m_Position.m_x<<"\n";
   }
 }
 

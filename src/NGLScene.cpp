@@ -77,6 +77,19 @@ void NGLScene::initializeGL()
 
 }
 
+void NGLScene::switchFullScreen()
+{
+  // Start windowed, switch to fullscreen on every other call
+  if(m_fullScreen %2 == 0)
+  {
+    showNormal();
+  }
+  else
+  {
+    showFullScreen();
+  }
+}
+
 void NGLScene::loadToShader()
 {
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
@@ -107,13 +120,12 @@ void NGLScene::loadToShader()
 void NGLScene::drawMember(Member &_toDraw)
 {
   _toDraw.draw();
-  std::cout<<"drawn\n";
 }
 
 void NGLScene::updateMember(Member &io_toUpdate)
 {
   ngl::Vec3 alignment = calcAlignment(io_toUpdate);
-  ngl::Vec3 cohesion = /*followSphere->getPosition() - */calcCohesion(io_toUpdate)*2;
+  ngl::Vec3 cohesion = /*followSphere->getPosition() - */calcCohesion(io_toUpdate)*10;
   ngl::Vec3 separation = calcSeparation(io_toUpdate);
   ngl::Vec3 newVelocity = followSphere->getPosition() - (io_toUpdate.getPosition() + ngl::Vec3(alignment + cohesion + separation));
   if(newVelocity.lengthSquared() != 0.0f)
@@ -121,7 +133,6 @@ void NGLScene::updateMember(Member &io_toUpdate)
     newVelocity.normalize();
   }
   io_toUpdate.setVelocity(newVelocity*0.01, false);
-  std::cout<<"Velocity "<<io_toUpdate.getVelocity().m_x<<"\n";
   io_toUpdate.setPosition(io_toUpdate.getVelocity(), false);
 }
 
@@ -149,7 +160,7 @@ ngl::Vec3 NGLScene::calcAlignment(Member &_toCalc)
   }
   if(neighbours == 0)
   {
-    std::cout<<"No neighbours\n";
+//    std::cout<<"No neighbours\n";
     return alignVec;
   }
 
@@ -158,7 +169,7 @@ ngl::Vec3 NGLScene::calcAlignment(Member &_toCalc)
   {
     alignVec.normalize();
   }
-  std::cout<<"Some neighbours\n";
+//  std::cout<<"Some neighbours\n";
   return alignVec;
 }
 
@@ -227,7 +238,7 @@ void NGLScene::paintGL()
   m_transform.setPosition(followSphere->getPosition());
   loadToShader();
   followSphere->draw();
-  std::cout <<"size " <<makerBirds.BirdID.size() << "\n";
+//  std::cout <<"size " <<makerBirds.BirdID.size() << "\n";
   for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
   {
     m_transform.setPosition(getMemberPosition(*makerBirds.BirdID[i]));
@@ -250,17 +261,21 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
 {
   // Get the amount the mouse has moved
   ngl::Vec2 o_mouseMovement = ngl::Vec2(width()/2 - _event->x(), height()/2 - _event->y());
-  if(cam.getForwardVector().m_y>=1.0f)
+  std::cout<<"xROT IS "<<cam.getyRot()<<"\n";
+  if(cam.getxRot()>=M_PI)
   {
-    cam.rotateCamera(-0.01f, 0.0f);
+    cam.setxRot(M_PI - 0.0001f);
   }
 
-  if(cam.getForwardVector().m_y<=-1.0f)
+  if(cam.getxRot()<=0)
   {
-    cam.rotateCamera(0.01f, 0.0f);
+    cam.setxRot(0.0001f);
   }
+
+
   // Increment the player's rotation by this amount
   cam.rotateCamera(o_mouseMovement.m_x, o_mouseMovement.m_y);
+
   // Return the mouse pointer to the screen centre and update
   QPoint glob = mapToGlobal(QPoint(width()/2,height()/2));
   QCursor::setPos(glob);
@@ -268,7 +283,7 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
   cam.calcVectors();
   std::cout<<"x is "<<cam.getForwardVector().m_x<<"\n";
   std::cout<<"y is "<<cam.getForwardVector().m_y<<"\n";
-//  followSphere->updatePosition(cam.getForwardVector() * 20);
+  //followSphere->setPosition(cam.getForwardVector() *4, true);
 //  followSphere->draw();
 
   update();
@@ -307,6 +322,7 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   case Qt::Key_S : cam.moveCamera(-0.1f, 0.0f); break;
   case Qt::Key_A : cam.moveCamera(0.0f, -0.1f); break;
   case Qt::Key_D : cam.moveCamera(0.0f, 0.1f);  break;
+  case Qt::Key_F : m_fullScreen += 1; switchFullScreen(); break;
   default : break;
   }
   // finally update the GLWindow and re-draw

@@ -101,6 +101,8 @@ private:
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief Used to get the position of a given member
     //----------------------------------------------------------------------------------------------------------------------
+    void switchFullScreen();
+
     ngl::Vec3 getMemberPosition(Member &_toGet) { return _toGet.getPosition(); }
 
     ngl::Vec3 getMemberVelocity(Member &_toGet) { return _toGet.getVelocity(); }
@@ -118,6 +120,8 @@ private:
     /// @brief window height
     //----------------------------------------------------------------------------------------------------------------------
     int m_height;
+
+    int m_fullScreen;
 
     BirdFactory makerBirds;
     Camera cam;
