@@ -124,7 +124,7 @@ void NGLScene::drawMember(Member &_toDraw)
 
 void NGLScene::updateMember(Member &io_toUpdate)
 {
-  ngl::Vec3 alignment = calcAlignment(io_toUpdate);
+  ngl::Vec3 alignment = calcAlignment(io_toUpdate)*10;
   ngl::Vec3 cohesion = /*followSphere->getPosition() - */calcCohesion(io_toUpdate)*10;
   ngl::Vec3 separation = calcSeparation(io_toUpdate);
   ngl::Vec3 newVelocity = followSphere->getPosition() - (io_toUpdate.getPosition() + ngl::Vec3(alignment + cohesion + separation));
@@ -132,7 +132,10 @@ void NGLScene::updateMember(Member &io_toUpdate)
   {
     newVelocity.normalize();
   }
-  io_toUpdate.setVelocity(newVelocity*0.01, false);
+  if(newVelocity.length()<1.0f)
+  {
+    io_toUpdate.setVelocity(newVelocity*0.01, false);
+  }
   io_toUpdate.setPosition(io_toUpdate.getVelocity(), false);
 }
 
@@ -267,7 +270,7 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
     cam.setxRot(M_PI - 0.0001f);
   }
 
-  if(cam.getxRot()<=0)
+  if(cam.getxRot()<=0.0002f)
   {
     cam.setxRot(0.0001f);
   }
@@ -283,7 +286,7 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
   cam.calcVectors();
   std::cout<<"x is "<<cam.getForwardVector().m_x<<"\n";
   std::cout<<"y is "<<cam.getForwardVector().m_y<<"\n";
-  //followSphere->setPosition(cam.getForwardVector() *4, true);
+  followSphere->setPosition(cam.getForwardVector(), true);
 //  followSphere->draw();
 
   update();

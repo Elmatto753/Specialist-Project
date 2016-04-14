@@ -2,7 +2,7 @@
 
 Camera::Camera()
 {
-  m_Position = ngl::Vec3(100.0f, 0.0f, 0.0f);
+  m_Position = ngl::Vec3(10.0f, 0.0f, 0.0f);
   m_Look = ngl::Vec3(1.0f, 0.0f, 0.0f);
 }
 
@@ -35,7 +35,7 @@ void Camera::rotateCamera(float _up, float _right)
   m_yRot = (m_yRot + (_up / 500));
 //  std::cout<<"Camera rotated ";
 
-  m_Look = ngl::Vec3(-(cos(m_yRot) * sin(m_xRot)),
+  m_Look = m_Position + ngl::Vec3(-(cos(m_yRot) * sin(m_xRot)),
                      -(cos(m_xRot)),
                      (sin(m_yRot) * sin(m_xRot)))*360;
 }
@@ -43,7 +43,7 @@ void Camera::rotateCamera(float _up, float _right)
 void Camera::calcVectors()
 {
   // Calculate the camera's forward vector based on its angles of rotation
-  m_forwardVector = ngl::Vec3(-(cos(m_yRot) * sin(m_xRot)),
+  m_forwardVector = m_Position + ngl::Vec3(-(cos(m_yRot) * sin(m_xRot)),
                              -(cos(m_xRot)),
                              sin(m_yRot) * sin(m_xRot))*360;
   // Cross the forward vector with the constant up vector to get the side vector
