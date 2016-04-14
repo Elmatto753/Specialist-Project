@@ -2,7 +2,7 @@
 
 Camera::Camera()
 {
-  m_Position = ngl::Vec3(0.0f, 0.0f, 0.0f);
+  m_Position = ngl::Vec3(100.0f, 0.0f, 0.0f);
   m_Look = ngl::Vec3(1.0f, 0.0f, 0.0f);
 }
 

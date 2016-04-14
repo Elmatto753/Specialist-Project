@@ -68,7 +68,7 @@ void NGLScene::initializeGL()
   shader->setRegisteredUniform("lightDiffuse",1.0f,1.0f,1.0f,1.0f);
 
   // Create the projection matrix
-  m_proj=ngl::perspective(90.0f,float(width()/height()),0.1,20);
+  m_proj=ngl::perspective(90.0f,float(width()/height()),0.1,200);
   m_view=ngl::lookAt(cam.getPosition(), cam.getLook(), ngl::Vec3(0.0f, 1.0f, 0.0f));
 
   followSphere = new FollowPoint;
@@ -113,14 +113,13 @@ void NGLScene::drawMember(Member &_toDraw)
 void NGLScene::updateMember(Member &io_toUpdate)
 {
   ngl::Vec3 alignment = calcAlignment(io_toUpdate);
-  ngl::Vec3 cohesion = /*calcCohesion(io_toUpdate)*/ followSphere->getPosition();
-  std::cout<<"position "<<followSphere->getPosition().m_x<<"\n";
+  ngl::Vec3 cohesion = /*followSphere->getPosition() - */calcCohesion(io_toUpdate)*2;
   ngl::Vec3 separation = calcSeparation(io_toUpdate);
-  std::cout<<"alignment = "<<alignment.m_x<<"\n";
-  std::cout<<"cohesion = "<<cohesion.m_x<<"\n";
-  std::cout<<"separation = "<<separation.m_x<<"\n";
-  ngl::Vec3 newVelocity = ngl::Vec3(alignment + cohesion + separation);
-  newVelocity.normalize();
+  ngl::Vec3 newVelocity = followSphere->getPosition() - (io_toUpdate.getPosition() + ngl::Vec3(alignment + cohesion + separation));
+  if(newVelocity.lengthSquared() != 0.0f)
+  {
+    newVelocity.normalize();
+  }
   io_toUpdate.setVelocity(newVelocity*0.01, false);
   std::cout<<"Velocity "<<io_toUpdate.getVelocity().m_x<<"\n";
   io_toUpdate.setPosition(io_toUpdate.getVelocity(), false);
@@ -131,7 +130,6 @@ float NGLScene::calcDistance(ngl::Vec3 _vector1, ngl::Vec3 _vector2)
   float dX = _vector2.m_x - _vector1.m_x;
   float dY = _vector2.m_y - _vector1.m_y;
   float dZ = _vector2.m_z - _vector1.m_z;
-  std::cout<<"returning "<<sqrt(dX*dX + dY*dY + dZ*dZ)<<"\n";
   return sqrt(dX*dX + dY*dY + dZ*dZ);
 }
 
@@ -143,14 +141,10 @@ ngl::Vec3 NGLScene::calcAlignment(Member &_toCalc)
   for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
   {
     float dist = calcDistance(getMemberPosition(*makerBirds.BirdID[i]), memPos);
-    std::cout<<"BirdID pos = "<<getMemberPosition(*makerBirds.BirdID[i]).m_x<<" "<<getMemberPosition(*makerBirds.BirdID[i]).m_y<<" "<<getMemberPosition(*makerBirds.BirdID[i]).m_z<<"\n";
-
-    std::cout<<"dist = "<<dist<<"\n";
     if(dist < 50.0f && dist != 0.0f )
     {
       alignVec += getMemberVelocity(*makerBirds.BirdID[i]);
       neighbours++;
-      std::cout<<"You've got mail \n";
     }
   }
   if(neighbours == 0)
@@ -160,7 +154,7 @@ ngl::Vec3 NGLScene::calcAlignment(Member &_toCalc)
   }
 
   alignVec /= neighbours;
-  if(alignVec.length() != 0.0f)
+  if(alignVec.lengthSquared() != 0.0f)
   {
     alignVec.normalize();
   }
@@ -171,8 +165,8 @@ ngl::Vec3 NGLScene::calcAlignment(Member &_toCalc)
 ngl::Vec3 NGLScene::calcCohesion(Member &_toCalc)
 {
   unsigned int neighbours = 0;
-  ngl::Vec3 coVec = ngl::Vec3(0.0f, 0.0f, 0.0f);
   ngl::Vec3 memPos = _toCalc.getPosition();
+  ngl::Vec3 coVec = ngl::Vec3(0.0f, 0.0f, 0.0f);
   for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
   {
     float dist = calcDistance(getMemberPosition(*makerBirds.BirdID[i]), memPos);
@@ -182,14 +176,15 @@ ngl::Vec3 NGLScene::calcCohesion(Member &_toCalc)
       neighbours++;
     }
   }
-  if(neighbours == 0)
-  {
+  if(!neighbours)
     return coVec;
-  }
 
   coVec /= neighbours;
   coVec = coVec - getMemberPosition(_toCalc);
-  coVec.normalize();
+  if(coVec.lengthSquared() != 0.0f)
+  {
+    coVec.normalize();
+  }
   return coVec;
 }
 
@@ -214,11 +209,13 @@ ngl::Vec3 NGLScene::calcSeparation(Member &_toCalc)
     return sepVec;
   }
 
-  std::cout<<"neighbours: "<<neighbours<<"\n";
   sepVec /= neighbours;
   sepVec = sepVec - getMemberPosition(_toCalc);
   sepVec *= -1;
-  sepVec.normalize();
+  if(sepVec.lengthSquared() != 0.0f)
+  {
+    sepVec.normalize();
+  }
   return sepVec;
 }
 
@@ -228,8 +225,9 @@ void NGLScene::paintGL()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,m_width,m_height);
   m_transform.setPosition(followSphere->getPosition());
-//  loadToShader();
-//  followSphere->draw();
+  loadToShader();
+  followSphere->draw();
+  std::cout <<"size " <<makerBirds.BirdID.size() << "\n";
   for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
   {
     m_transform.setPosition(getMemberPosition(*makerBirds.BirdID[i]));
