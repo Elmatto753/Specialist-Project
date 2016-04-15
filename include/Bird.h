@@ -19,11 +19,11 @@ public:
   ngl::Vec3 calcCohesion();
   ngl::Vec3 calcSeparation();
 
+
+
 protected:
 
   ngl::Vec3 m_Velocity;
-
-
 
 };
 

@@ -132,10 +132,52 @@ void NGLScene::updateMember(Member &io_toUpdate)
   {
     newVelocity.normalize();
   }
-  if(newVelocity.length()<1.0f)
+
+  float dist = ngl::Vec3(followSphere->getPosition() - io_toUpdate.getPosition()).length();
+
+  if (dist > 10.0f)
   {
-    io_toUpdate.setVelocity(newVelocity*0.01, false);
+    io_toUpdate.setForwardVector(followSphere->getPosition());
+    io_toUpdate.calcSideVector();
   }
+  else
+  {
+    io_toUpdate.setSideVector(followSphere->getPosition());
+    io_toUpdate.calcForwardVector();
+  }
+
+  if(newVelocity.m_x > 1.0f)
+  {
+    newVelocity.m_x = 1.0f;
+  }
+
+  if(newVelocity.m_x < -1.0f)
+  {
+    newVelocity.m_x = 1.0f;
+  }
+
+  if(newVelocity.m_y > 1.0f)
+  {
+    newVelocity.m_y = 1.0f;
+  }
+
+  if(newVelocity.m_y < -1.0f)
+  {
+    newVelocity.m_y = -1.0f;
+  }
+
+  if(newVelocity.m_z > 1.0f)
+  {
+    newVelocity.m_z = 1.0f;
+  }
+
+  if(newVelocity.m_z < -1.0f)
+  {
+    newVelocity.m_z = -1.0f;
+  }
+
+  io_toUpdate.setVelocity(newVelocity * 0.0001f * io_toUpdate.getForwardVector() , false);
+
   io_toUpdate.setPosition(io_toUpdate.getVelocity(), false);
 }
 

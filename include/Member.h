@@ -21,11 +21,33 @@ public:
   void setPosition(ngl::Vec3 newPosition, bool replace);
   void setVelocity(ngl::Vec3 newVelocity, bool replace);
 
+  ngl::Vec3 getForwardVector() { return m_ForwardVector; }
+  ngl::Vec3 getSideVector() { return m_SideVector; }
+
+  void setForwardVector(ngl::Vec3 newFV);
+  void setSideVector(ngl::Vec3 newSV);
+
+  float getxRot() { return m_xRot; }
+  float getyRot() { return m_yRot; }
+
+  void setxRot(float newX);
+  void setyRot(float newY);
+
+  void calcVectors();
+  void calcForwardVector();
+  void calcSideVector();
+
 protected:
 
   ngl::Obj m_Mesh;
   ngl::Vec3 m_Position;
   ngl::Vec3 m_Velocity;
+  ngl::Vec3 m_ForwardVector;
+  ngl::Vec3 m_SideVector;
+
+  float m_xRot;
+  float m_yRot;
+
 
 
 };
