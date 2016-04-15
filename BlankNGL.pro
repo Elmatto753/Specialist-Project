@@ -39,6 +39,9 @@ OTHER_FILES+= README.md \
               references.txt \
               $$PWD/models/Sphere.obj \
               $$PWD/models/Bird.obj \
+              $$PWD/models/Pyramid.obj \
+              $$PWD/models/Wall.obj \
+              $$PWD/models/Torus.obj \
               $$PWD/shaders/FragShader.glsl \
               $$PWD/shaders/VertShader.glsl
 # were are going to default to a console app

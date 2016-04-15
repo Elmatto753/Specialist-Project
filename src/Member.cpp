@@ -85,10 +85,7 @@ void Member::calcVectors()
 void Member::calcForwardVector()
 {
   m_ForwardVector = m_SideVector.cross((ngl::Vec3(0.0f,1.0f,0.0f)));
-  if(m_ForwardVector.lengthSquared() != 0.0f)
-  {
-    //m_ForwardVector.normalize();
-  }
+
 }
 
 void Member::calcSideVector()
@@ -100,4 +97,5 @@ void Member::calcSideVector()
     //m_forwardVector.normalize();
     m_SideVector.normalize();
   }
+
 }

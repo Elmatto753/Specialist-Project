@@ -153,7 +153,7 @@ void NGLScene::updateMember(Member &io_toUpdate)
 
   if(newVelocity.m_x < -1.0f)
   {
-    newVelocity.m_x = 1.0f;
+    newVelocity.m_x = -1.0f;
   }
 
   if(newVelocity.m_y > 1.0f)
