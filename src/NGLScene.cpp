@@ -124,8 +124,8 @@ void NGLScene::drawMember(Member &_toDraw)
 
 void NGLScene::updateMember(Member &io_toUpdate)
 {
-  ngl::Vec3 alignment = calcAlignment(io_toUpdate)*10;
-  ngl::Vec3 cohesion = /*followSphere->getPosition() - */calcCohesion(io_toUpdate)*10;
+  ngl::Vec3 alignment = calcAlignment(io_toUpdate);
+  ngl::Vec3 cohesion = /*followSphere->getPosition() - */calcCohesion(io_toUpdate);
   ngl::Vec3 separation = calcSeparation(io_toUpdate);
   ngl::Vec3 newVelocity = followSphere->getPosition() - (io_toUpdate.getPosition() + ngl::Vec3(alignment + cohesion + separation));
   if(newVelocity.lengthSquared() != 0.0f)
