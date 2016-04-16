@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "SwarmFactory.h"
 #include "FollowPoint.h"
+#include "AvoidShapes.h"
 #include <ngl/Camera.h>
 #include <ngl/Colour.h>
 #include <ngl/Light.h>
@@ -126,6 +127,10 @@ private:
     BirdFactory makerBirds;
     Camera cam;
     FollowPoint *followSphere;
+    SphereShape *avoidSphere;
+    PyramidShape *avoidPyramid;
+    WallShape *avoidWall;
+    TorusShape *avoidTorus;
 
     ngl::Transformation m_transform;
 

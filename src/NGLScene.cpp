@@ -72,6 +72,10 @@ void NGLScene::initializeGL()
   m_view=ngl::lookAt(cam.getPosition(), cam.getLook(), ngl::Vec3(0.0f, 1.0f, 0.0f));
 
   followSphere = new FollowPoint;
+  avoidSphere = new SphereShape;
+  avoidPyramid = new PyramidShape;
+  avoidWall = new WallShape;
+  avoidTorus = new TorusShape;
 
   startTimer(10);
 
@@ -127,11 +131,27 @@ void NGLScene::updateMember(Member &io_toUpdate)
   ngl::Vec3 alignment = calcAlignment(io_toUpdate);
   ngl::Vec3 cohesion = /*followSphere->getPosition() - */calcCohesion(io_toUpdate);
   ngl::Vec3 separation = calcSeparation(io_toUpdate);
-  ngl::Vec3 newVelocity = followSphere->getPosition() - (io_toUpdate.getPosition() + ngl::Vec3(alignment + cohesion + separation));
+  ngl::Vec3 newVelocity = (followSphere->getPosition() * followSphere->getPosition()) -
+                          (io_toUpdate.getPosition() * io_toUpdate.getPosition() +
+                          (ngl::Vec3(alignment + cohesion + separation)));
   if(newVelocity.lengthSquared() != 0.0f)
   {
     newVelocity.normalize();
   }
+  //std::cout<<"x = "<<newVelocity.m_x<<" y = "<<newVelocity.m_y<<" z = "<<newVelocity.m_z<<"\n";
+
+//  if(newVelocity.m_x < 0.0f)
+//  {
+//    newVelocity.m_x = -newVelocity.m_x;
+//  }
+//  if(newVelocity.m_y < 0.0f)
+//  {
+//    newVelocity.m_y = -newVelocity.m_y;
+//  }
+//  if(newVelocity.m_z < 0.0f)
+//  {
+//    newVelocity.m_z = -newVelocity.m_z;
+//  }
 
   float dist = ngl::Vec3(followSphere->getPosition() - io_toUpdate.getPosition()).length();
 
@@ -145,38 +165,61 @@ void NGLScene::updateMember(Member &io_toUpdate)
     io_toUpdate.setSideVector(followSphere->getPosition());
     io_toUpdate.calcForwardVector();
   }
+  std::cout<<"xpos = "<<followSphere->getPosition().m_x<<" ypos = "<<followSphere->getPosition().m_y<<" zpos = "<<followSphere->getPosition().m_z<<"\n";
+  std::cout<<"x = "<<io_toUpdate.getForwardVector().m_x<<" y = "<<io_toUpdate.getForwardVector().m_y<<" z = "<<io_toUpdate.getForwardVector().m_z<<"\n";
 
-  if(newVelocity.m_x > 1.0f)
-  {
-    newVelocity.m_x = 1.0f;
-  }
-
-  if(newVelocity.m_x < -1.0f)
-  {
-    newVelocity.m_x = -1.0f;
-  }
-
-  if(newVelocity.m_y > 1.0f)
-  {
-    newVelocity.m_y = 1.0f;
-  }
-
-  if(newVelocity.m_y < -1.0f)
-  {
-    newVelocity.m_y = -1.0f;
-  }
-
-  if(newVelocity.m_z > 1.0f)
-  {
-    newVelocity.m_z = 1.0f;
-  }
-
-  if(newVelocity.m_z < -1.0f)
-  {
-    newVelocity.m_z = -1.0f;
-  }
-
+  io_toUpdate.getForwardVector().normalize();
   io_toUpdate.setVelocity(newVelocity * 0.0001f * io_toUpdate.getForwardVector() , false);
+
+  if(io_toUpdate.getVelocity().m_x > 1.0f)
+  {
+    io_toUpdate.setVelocity(ngl::Vec3(1.0f,
+                                      io_toUpdate.getVelocity().m_y,
+                                      io_toUpdate.getVelocity().m_z),
+                                      true);
+  }
+
+  else if(io_toUpdate.getVelocity().m_x < -1.0f)
+  {
+    io_toUpdate.setVelocity(ngl::Vec3(-1.0f,
+                                      io_toUpdate.getVelocity().m_y,
+                                      io_toUpdate.getVelocity().m_z),
+                                      true);
+  }
+
+  if(io_toUpdate.getVelocity().m_y > 1.0f)
+  {
+    io_toUpdate.setVelocity(ngl::Vec3(io_toUpdate.getVelocity().m_x,
+                                      1.0f,
+                                      io_toUpdate.getVelocity().m_z),
+                                      true);
+  }
+
+  else if(io_toUpdate.getVelocity().m_y < -1.0f)
+  {
+    io_toUpdate.setVelocity(ngl::Vec3(io_toUpdate.getVelocity().m_x,
+                                      -1.0f,
+                                      io_toUpdate.getVelocity().m_z),
+                                      true);
+  }
+
+  if(io_toUpdate.getVelocity().m_z > 1.0f)
+  {
+    io_toUpdate.setVelocity(ngl::Vec3(io_toUpdate.getVelocity().m_x,
+                                      io_toUpdate.getVelocity().m_y,
+                                      1.0f),
+                                      true);
+  }
+
+  else if(io_toUpdate.getVelocity().m_z < -1.0f)
+  {
+    io_toUpdate.setVelocity(ngl::Vec3(io_toUpdate.getVelocity().m_x,
+                                      io_toUpdate.getVelocity().m_y,
+                                      -1.0f),
+                                      true);
+  }
+
+  //io_toUpdate.setVelocity(newVelocity * 0.0001f * io_toUpdate.getForwardVector() , false);
 
   io_toUpdate.setPosition(io_toUpdate.getVelocity(), false);
 }
@@ -281,8 +324,25 @@ void NGLScene::paintGL()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,m_width,m_height);
   m_transform.setPosition(followSphere->getPosition());
+  m_transform.setScale(2.0f, 2.0f, 2.0f);
   loadToShader();
   followSphere->draw();
+  m_transform.setPosition(avoidSphere->getPosition());
+  m_transform.setScale(3.0f, 3.0f, 3.0f);
+  loadToShader();
+  avoidSphere->draw();
+  m_transform.setPosition(avoidPyramid->getPosition());
+  m_transform.setScale(3.0f, 3.0f, 3.0f);
+  loadToShader();
+  avoidPyramid->draw();
+  m_transform.setPosition(avoidWall->getPosition());
+  loadToShader();
+  avoidWall->draw();
+  m_transform.setPosition(avoidTorus->getPosition());
+  m_transform.setScale(3.0f, 3.0f, 3.0f);
+  loadToShader();
+  avoidTorus->draw();
+  m_transform.setScale(1.0f, 1.0f, 1.0f);
 //  std::cout <<"size " <<makerBirds.BirdID.size() << "\n";
   for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
   {
@@ -328,7 +388,7 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
   cam.calcVectors();
   std::cout<<"x is "<<cam.getForwardVector().m_x<<"\n";
   std::cout<<"y is "<<cam.getForwardVector().m_y<<"\n";
-  followSphere->setPosition(cam.getForwardVector(), true);
+  followSphere->setPosition(cam.getForwardVector()/2, true);
 //  followSphere->draw();
 
   update();

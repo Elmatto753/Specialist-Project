@@ -22,14 +22,16 @@ SOURCES+= $$PWD/src/main.cpp \
           $$PWD/src/Member.cpp \
           $$PWD/src/Bird.cpp \
           $$PWD/src/Camera.cpp \
-          $$PWD/src/FollowPoint.cpp
+          $$PWD/src/FollowPoint.cpp \
+          $$PWD/src/AvoidShapes.cpp
 # same for the .h files
 HEADERS+= $$PWD/include/NGLScene.h \
           $$PWD/include/SwarmFactory.h \
           $$PWD/include/Member.h \
           $$PWD/include/Bird.h \
           $$PWD/include/Camera.h \
-          $$PWD/include/FollowPoint.h
+          $$PWD/include/FollowPoint.h \
+          $$PWD/include/AvoidShapes.h
 # and add the include dir into the search path for Qt and make
 INCLUDEPATH +=./include
 # where our exe is going to live (root of project)
