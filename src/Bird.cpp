@@ -7,7 +7,7 @@ Bird::Bird()
   m_Mesh.createVAO();
   std::random_device rd;
   std::mt19937 mt(rd());
-  std::uniform_real_distribution<float> dist(-10.0f, 10.0f);
+  std::uniform_real_distribution<float> dist(100.0f, 120.0f);
   m_Position = ngl::Vec3(dist(mt), dist(mt), dist(mt));
   m_Velocity = ngl::Vec3(0.0f, 0.0f, 0.0f);
   std::cout<<"made une birde\n";

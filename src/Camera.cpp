@@ -2,8 +2,8 @@
 
 Camera::Camera()
 {
-  m_Position = ngl::Vec3(0.0f, 0.0f, 0.0f);
-  m_Look = ngl::Vec3(1.0f, 0.0f, 0.0f);
+  m_Position = ngl::Vec3(100.0f, 100.0f, 100.0f);
+  m_Look = ngl::Vec3(110.0f, 100.0f, 100.0f);
 }
 
 Camera::~Camera()
@@ -37,7 +37,7 @@ void Camera::rotateCamera(float _up, float _right)
 
   m_Look = m_Position + ngl::Vec3(-(cos(m_yRot) * sin(m_xRot)),
                      -(cos(m_xRot)),
-                     (sin(m_yRot) * sin(m_xRot)))*360;
+                     (sin(m_yRot) * sin(m_xRot)))*180;
 }
 
 void Camera::calcVectors()

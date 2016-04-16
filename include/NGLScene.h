@@ -126,6 +126,7 @@ private:
 
     BirdFactory makerBirds;
     Camera cam;
+    AvoidShapes ShapeStore;
     FollowPoint *followSphere;
     SphereShape *avoidSphere;
     PyramidShape *avoidPyramid;

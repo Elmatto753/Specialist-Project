@@ -131,9 +131,20 @@ void NGLScene::updateMember(Member &io_toUpdate)
   ngl::Vec3 alignment = calcAlignment(io_toUpdate);
   ngl::Vec3 cohesion = /*followSphere->getPosition() - */calcCohesion(io_toUpdate);
   ngl::Vec3 separation = calcSeparation(io_toUpdate);
-  ngl::Vec3 newVelocity = (followSphere->getPosition() * followSphere->getPosition()) -
-                          (io_toUpdate.getPosition() * io_toUpdate.getPosition() +
+  ngl::Vec3 newVelocity = (followSphere->getPosition()) -
+                          (io_toUpdate.getPosition() +
                           (ngl::Vec3(alignment + cohesion + separation)));
+
+  for(unsigned int i = 0; i<ShapeStore.ShapeList.size(); i++)
+  {
+    float shapeDist = calcDistance(getMemberPosition(ShapeStore.ShapeList[i]), io_toUpdate.getPosition());
+
+    if(shapeDist < 10.0f)
+    {
+      newVelocity += io_toUpdate.getPosition() - getMemberPosition(ShapeStore.ShapeList[i]);
+    }
+  }
+
   if(newVelocity.lengthSquared() != 0.0f)
   {
     newVelocity.normalize();
@@ -169,53 +180,73 @@ void NGLScene::updateMember(Member &io_toUpdate)
   std::cout<<"x = "<<io_toUpdate.getForwardVector().m_x<<" y = "<<io_toUpdate.getForwardVector().m_y<<" z = "<<io_toUpdate.getForwardVector().m_z<<"\n";
 
   io_toUpdate.getForwardVector().normalize();
-  io_toUpdate.setVelocity(newVelocity * 0.0001f * io_toUpdate.getForwardVector() , false);
-
-  if(io_toUpdate.getVelocity().m_x > 1.0f)
+  if(io_toUpdate.getForwardVector().m_x <0.0f)
   {
-    io_toUpdate.setVelocity(ngl::Vec3(1.0f,
+    io_toUpdate.setForwardVector(ngl::Vec3(-io_toUpdate.getForwardVector().m_x,
+                                           io_toUpdate.getForwardVector().m_y,
+                                           io_toUpdate.getForwardVector().m_z));
+  }
+
+  if(io_toUpdate.getForwardVector().m_y <0.0f)
+  {
+    io_toUpdate.setForwardVector(ngl::Vec3(io_toUpdate.getForwardVector().m_x,
+                                           -io_toUpdate.getForwardVector().m_y,
+                                           io_toUpdate.getForwardVector().m_z));
+  }
+
+  if(io_toUpdate.getForwardVector().m_z <0.0f)
+  {
+    io_toUpdate.setForwardVector(ngl::Vec3(io_toUpdate.getForwardVector().m_x,
+                                           io_toUpdate.getForwardVector().m_y,
+                                           -io_toUpdate.getForwardVector().m_z));
+  }
+  io_toUpdate.setVelocity(newVelocity * 0.0001f * (io_toUpdate.getForwardVector() /*- io_toUpdate.getPosition()*/) , false);
+
+  if(io_toUpdate.getVelocity().m_x > 0.5f)
+  {
+    io_toUpdate.setVelocity(ngl::Vec3(0.5f,
                                       io_toUpdate.getVelocity().m_y,
                                       io_toUpdate.getVelocity().m_z),
                                       true);
   }
 
-  else if(io_toUpdate.getVelocity().m_x < -1.0f)
+  else if(io_toUpdate.getVelocity().m_x < -0.5f)
   {
-    io_toUpdate.setVelocity(ngl::Vec3(-1.0f,
+    io_toUpdate.setVelocity(ngl::Vec3(-0.5f,
                                       io_toUpdate.getVelocity().m_y,
                                       io_toUpdate.getVelocity().m_z),
                                       true);
   }
 
-  if(io_toUpdate.getVelocity().m_y > 1.0f)
+  if(io_toUpdate.getVelocity().m_y > 0.5f)
   {
     io_toUpdate.setVelocity(ngl::Vec3(io_toUpdate.getVelocity().m_x,
-                                      1.0f,
+                                      0.5f,
                                       io_toUpdate.getVelocity().m_z),
                                       true);
   }
 
-  else if(io_toUpdate.getVelocity().m_y < -1.0f)
+  else if(io_toUpdate.getVelocity().m_y < -0.5f)
   {
     io_toUpdate.setVelocity(ngl::Vec3(io_toUpdate.getVelocity().m_x,
-                                      -1.0f,
+                                      -0.5f,
                                       io_toUpdate.getVelocity().m_z),
                                       true);
   }
 
-  if(io_toUpdate.getVelocity().m_z > 1.0f)
+  if(io_toUpdate.getVelocity().m_z > 0.5f)
   {
     io_toUpdate.setVelocity(ngl::Vec3(io_toUpdate.getVelocity().m_x,
                                       io_toUpdate.getVelocity().m_y,
-                                      1.0f),
+                                      0.5f),
                                       true);
   }
 
-  else if(io_toUpdate.getVelocity().m_z < -1.0f)
+  else if(io_toUpdate.getVelocity().m_z < -0.5f)
   {
     io_toUpdate.setVelocity(ngl::Vec3(io_toUpdate.getVelocity().m_x,
                                       io_toUpdate.getVelocity().m_y,
-                                      -1.0f),
+                                      -0.5f),
                                       true);
   }
 
@@ -388,7 +419,7 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
   cam.calcVectors();
   std::cout<<"x is "<<cam.getForwardVector().m_x<<"\n";
   std::cout<<"y is "<<cam.getForwardVector().m_y<<"\n";
-  followSphere->setPosition(cam.getForwardVector()/2, true);
+  followSphere->setPosition(cam.getLook(), true);
 //  followSphere->draw();
 
   update();

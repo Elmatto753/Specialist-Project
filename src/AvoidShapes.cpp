@@ -15,7 +15,7 @@ SphereShape::SphereShape()
 {
   m_Mesh.load("models/Sphere.obj", true);
   m_Mesh.createVAO();
-  m_Position = ngl::Vec3(40.0f, 0.0f, 0.0f);
+  m_Position = ngl::Vec3(140.0f, 100.0f, 100.0f);
   std::cout<<"Made sphere";
 }
 
@@ -28,7 +28,7 @@ PyramidShape::PyramidShape()
 {
   m_Mesh.load("models/Pyramid.obj", true);
   m_Mesh.createVAO();
-  m_Position = ngl::Vec3(0.0f, 0.0f, 40.0f);
+  m_Position = ngl::Vec3(100.0f, 100.0f, 140.0f);
 }
 
 PyramidShape::~PyramidShape()
@@ -40,7 +40,7 @@ WallShape::WallShape()
 {
   m_Mesh.load("models/Wall.obj", true);
   m_Mesh.createVAO();
-  m_Position = ngl::Vec3(-40.0f, 0.0f, 0.0f);
+  m_Position = ngl::Vec3(60.0f, 100.0f, 100.0f);
 }
 
 WallShape::~WallShape()
@@ -52,7 +52,7 @@ TorusShape::TorusShape()
 {
   m_Mesh.load("models/Torus.obj", true);
   m_Mesh.createVAO();
-  m_Position = ngl::Vec3(0.0f, 0.0f, -40.0f);
+  m_Position = ngl::Vec3(100.0f, 100.0f, 60.0f);
 }
 
 TorusShape::~TorusShape()
