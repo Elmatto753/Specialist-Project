@@ -2,7 +2,6 @@
 
 AvoidShapes::AvoidShapes()
 {
-  ShapeList.push_back(*this);
   std::cout<<"Made a shape";
 }
 

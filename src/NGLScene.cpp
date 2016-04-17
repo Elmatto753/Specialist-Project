@@ -73,9 +73,17 @@ void NGLScene::initializeGL()
 
   followSphere = new FollowPoint;
   avoidSphere = new SphereShape;
-  avoidPyramid = new PyramidShape;
+//  avoidPyramid = new PyramidShape;
   avoidWall = new WallShape;
-  avoidTorus = new TorusShape;
+//  avoidTorus = new TorusShape;
+  ShapeStore.ShapeList.push_back(*avoidSphere);
+//  ShapeStore.ShapeList.push_back(*avoidPyramid);
+  ShapeStore.ShapeList.push_back(*avoidWall);
+//  ShapeStore.ShapeList.push_back(*avoidTorus);
+
+  m_text = new ngl::Text(QFont("Arial", 14));
+  m_text->setScreenSize(width(), height());
+
 
   startTimer(10);
 
@@ -103,12 +111,16 @@ void NGLScene::loadToShader()
   ngl::Mat4 MVP;
   ngl::Mat3 normalMatrix;
   ngl::Mat4 M;
+  ngl::Mat4 R;
+
+  shader->setRegisteredUniform("lightPos", m_lightPos);
   M=m_transform.getMatrix()/**m_mouseGlobalTX*/;
 //  MV=  M*ngl::Mat4(cam.getSideVector().m_x, cam.getSideVector().m_y, cam.getSideVector().m_z, 0.0f,
 //                   0.0f,1.0f,0.0f,0.0f,
 //                   cam.getForwardVector().m_x, cam.getForwardVector().m_y, cam.getForwardVector().m_z, 0.0f,
 //                   1.0f,1.0f,1.0f,1.0f);
   m_view = ngl::lookAt(cam.getPosition(), cam.getLook(), ngl::Vec3(0.0f, 1.0f, 0.0f));
+//  R= m_transform.getRotation();
   MV = M*m_view;
   MVP = MV*m_proj;
   normalMatrix=MV;
@@ -128,20 +140,19 @@ void NGLScene::drawMember(Member &_toDraw)
 
 void NGLScene::updateMember(Member &io_toUpdate)
 {
-  ngl::Vec3 alignment = calcAlignment(io_toUpdate);
-  ngl::Vec3 cohesion = /*followSphere->getPosition() - */calcCohesion(io_toUpdate);
+  ngl::Vec3 alignment = calcAlignment(io_toUpdate) * 10;
+  ngl::Vec3 cohesion = /*followSphere->getPosition() - */calcCohesion(io_toUpdate) *10;
   ngl::Vec3 separation = calcSeparation(io_toUpdate);
   ngl::Vec3 newVelocity = (followSphere->getPosition()) -
                           (io_toUpdate.getPosition() +
                           (ngl::Vec3(alignment + cohesion + separation)));
-
   for(unsigned int i = 0; i<ShapeStore.ShapeList.size(); i++)
   {
     float shapeDist = calcDistance(getMemberPosition(ShapeStore.ShapeList[i]), io_toUpdate.getPosition());
 
-    if(shapeDist < 10.0f)
+    if(abs(shapeDist) < 8.0f)
     {
-      newVelocity += io_toUpdate.getPosition() - getMemberPosition(ShapeStore.ShapeList[i]);
+      newVelocity += (io_toUpdate.getPosition() - getMemberPosition(ShapeStore.ShapeList[i])) * 100;
     }
   }
 
@@ -166,7 +177,7 @@ void NGLScene::updateMember(Member &io_toUpdate)
 
   float dist = ngl::Vec3(followSphere->getPosition() - io_toUpdate.getPosition()).length();
 
-  if (dist > 10.0f)
+  if (dist > 15.0f)
   {
     io_toUpdate.setForwardVector(followSphere->getPosition());
     io_toUpdate.calcSideVector();
@@ -176,8 +187,6 @@ void NGLScene::updateMember(Member &io_toUpdate)
     io_toUpdate.setSideVector(followSphere->getPosition());
     io_toUpdate.calcForwardVector();
   }
-  std::cout<<"xpos = "<<followSphere->getPosition().m_x<<" ypos = "<<followSphere->getPosition().m_y<<" zpos = "<<followSphere->getPosition().m_z<<"\n";
-  std::cout<<"x = "<<io_toUpdate.getForwardVector().m_x<<" y = "<<io_toUpdate.getForwardVector().m_y<<" z = "<<io_toUpdate.getForwardVector().m_z<<"\n";
 
   io_toUpdate.getForwardVector().normalize();
   if(io_toUpdate.getForwardVector().m_x <0.0f)
@@ -200,7 +209,9 @@ void NGLScene::updateMember(Member &io_toUpdate)
                                            io_toUpdate.getForwardVector().m_y,
                                            -io_toUpdate.getForwardVector().m_z));
   }
-  io_toUpdate.setVelocity(newVelocity * 0.0001f * (io_toUpdate.getForwardVector() /*- io_toUpdate.getPosition()*/) , false);
+
+
+  io_toUpdate.setVelocity(newVelocity * 0.0001f * (io_toUpdate.getForwardVector() + io_toUpdate.getPosition()) , false);
 
   if(io_toUpdate.getVelocity().m_x > 0.5f)
   {
@@ -354,7 +365,14 @@ void NGLScene::paintGL()
   // clear the screen and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,m_width,m_height);
+  QString text;
+  m_text->setColour(0,0,0);
+  m_text->renderText(10,10,text);
+  text.sprintf("Number of birds = %d", makerBirds.BirdID.size());
+  m_text->renderText(10,25,text);
+  m_lightPos = avoidWall->getPosition();
   m_transform.setPosition(followSphere->getPosition());
+  m_transform.setRotation(0.0f, 0.0f, 0.0f);
   m_transform.setScale(2.0f, 2.0f, 2.0f);
   loadToShader();
   followSphere->draw();
@@ -362,22 +380,23 @@ void NGLScene::paintGL()
   m_transform.setScale(3.0f, 3.0f, 3.0f);
   loadToShader();
   avoidSphere->draw();
-  m_transform.setPosition(avoidPyramid->getPosition());
-  m_transform.setScale(3.0f, 3.0f, 3.0f);
-  loadToShader();
-  avoidPyramid->draw();
+//  m_transform.setPosition(avoidPyramid->getPosition());
+//  m_transform.setScale(3.0f, 3.0f, 3.0f);
+//  loadToShader();
+//  avoidPyramid->draw();
   m_transform.setPosition(avoidWall->getPosition());
   loadToShader();
   avoidWall->draw();
-  m_transform.setPosition(avoidTorus->getPosition());
-  m_transform.setScale(3.0f, 3.0f, 3.0f);
-  loadToShader();
-  avoidTorus->draw();
+//  m_transform.setPosition(avoidTorus->getPosition());
+//  m_transform.setScale(3.0f, 3.0f, 3.0f);
+//  loadToShader();
+//  avoidTorus->draw();
   m_transform.setScale(1.0f, 1.0f, 1.0f);
 //  std::cout <<"size " <<makerBirds.BirdID.size() << "\n";
   for(unsigned int i = 0; i < makerBirds.BirdID.size(); i++)
   {
     m_transform.setPosition(getMemberPosition(*makerBirds.BirdID[i]));
+//    m_transform.setRotation(getMemberForwardVector(*makerBirds.BirdID[i]) + ngl::Vec3(90.0f, 0.0f, 0.0f));
     loadToShader();
     drawMember(*makerBirds.BirdID[i]);
     updateMember(*makerBirds.BirdID[i]);
@@ -397,7 +416,7 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
 {
   // Get the amount the mouse has moved
   ngl::Vec2 o_mouseMovement = ngl::Vec2(width()/2 - _event->x(), height()/2 - _event->y());
-  std::cout<<"xROT IS "<<cam.getyRot()<<"\n";
+
   if(cam.getxRot()>=M_PI)
   {
     cam.setxRot(M_PI - 0.0001f);
@@ -417,9 +436,10 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
   QCursor::setPos(glob);
 
   cam.calcVectors();
-  std::cout<<"x is "<<cam.getForwardVector().m_x<<"\n";
-  std::cout<<"y is "<<cam.getForwardVector().m_y<<"\n";
-  followSphere->setPosition(cam.getLook(), true);
+  if(lockFollow == false)
+  {
+    followSphere->setPosition(cam.getLook(), true);
+  }
 //  followSphere->draw();
 
   update();
@@ -453,15 +473,18 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   {
   // escape key to quite
   case Qt::Key_Escape : QGuiApplication::exit(EXIT_SUCCESS); break;
-  case Qt::Key_Space : makerBirds.Produce(); std::cout<<"registered \n "; break;
-  case Qt::Key_W : cam.moveCamera(0.1f, 0.0f);  break;
-  case Qt::Key_S : cam.moveCamera(-0.1f, 0.0f); break;
+  case Qt::Key_Space : makerBirds.Produce(); break;
+  case Qt::Key_W : cam.moveCamera(0.05f, 0.0f);  break;
+  case Qt::Key_S : cam.moveCamera(-0.05f, 0.0f); break;
   case Qt::Key_A : cam.moveCamera(0.0f, -0.1f); break;
   case Qt::Key_D : cam.moveCamera(0.0f, 0.1f);  break;
   case Qt::Key_F : m_fullScreen += 1; switchFullScreen(); break;
+  case Qt::Key_L : lockFollow = true; break;
+  case Qt::Key_P : lockFollow = false; break;
   default : break;
   }
   // finally update the GLWindow and re-draw
+
   loadToShader();
 
   update();

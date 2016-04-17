@@ -108,6 +108,8 @@ private:
 
     ngl::Vec3 getMemberVelocity(Member &_toGet) { return _toGet.getVelocity(); }
 
+    ngl::Vec3 getMemberForwardVector(Member &_toGet) { return _toGet.getForwardVector(); }
+
     ngl::Vec3 calcAlignment(Member &_toCalc);
     ngl::Vec3 calcCohesion(Member &_toCalc);
     ngl::Vec3 calcSeparation(Member &_toCalc);
@@ -140,8 +142,10 @@ private:
     ngl::Mat4 m_proj;
     ngl::Mat4 m_view;
 
+    ngl::Text *m_text;
 
 
+    bool lockFollow = false;
 
 
 };
